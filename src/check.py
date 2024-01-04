@@ -42,6 +42,7 @@ def ini():
         ini.read('config/minecraftserver.ini', 'UTF-8')
         _ = ini['basic']['version']
         _ = ini['basic']['port']
+        _ = ini['basic']['delete_server']
     except:
         return 1
     return 0

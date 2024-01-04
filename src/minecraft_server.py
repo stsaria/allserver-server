@@ -107,9 +107,7 @@ def start_minecraft_server(ip : str, mcid : str, motd = "The minecraft server"):
         if result != 0:
             logger.error(f"IP:{ip} Error : Fail get minecraft versions")
             return 2
-        if download_file("https://server.properties", f"minecraft/{ip}/server.properties") == False:
-            logger.error(f"IP:{ip} Error : Fail server.properties download")
-            return 3
+        shutil.copy("config/server.properties.template", f"minecraft/{ip}/server.properties")
         file_identification_rewriting(f"minecraft/{ip}/server.properties", "motd=", f"motd="+motd+"\n")
         with open(f"minecraft/{ip}/eula.txt", mode='a', encoding='utf-8') as f:
             f.write("#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).\n#"+dt_now_utc.strftime('%a')+" "+dt_now_utc.strftime('%b')+" "+dt_now_utc.strftime('%d')+" "+dt_now_utc.strftime('%H:%M:%S')+" "+str(dt_now_utc.tzinfo)+" "+dt_now_utc.strftime('%Y')+"\neula=true")
@@ -171,7 +169,7 @@ def socket_server(host = "0.0.0.0", port = 50385):
             else:
                 print(result)
                 client_socket.sendall("1".encode())
-            if os.path.isdir(f"minecraft/{client_address[0]}"):
+            if os.path.isdir(f"minecraft/{client_address[0]}") and ini['basic']['delete_server'].lower() == "true":
                 shutil.rmtree(f"minecraft/{client_address[0]}")
             client_socket.close()
         except KeyboardInterrupt:

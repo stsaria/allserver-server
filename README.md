@@ -124,6 +124,8 @@ AllServer
 1. allserver.pyを起動
 2. マインクラフトサーバーモードを選択
 3. サーバー起動モードを選択
+[server.properties.template](config/server.properties)(サーバー設定テンプレート)に基本的なサーバーの設定を書き込むことができます。（サーバーポート・サーバー名は変更できません）<br/>
+ただし、記述方法が間違っている場合は正しく起動できない可能性があります。
 ```
 python3 -u allserver.py   
 AllServer
