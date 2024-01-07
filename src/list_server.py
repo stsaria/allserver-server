@@ -29,14 +29,13 @@ def search_servers(location = ["", ""], team = [""]):
             reader = csv.reader(f)
             header = next(reader)
             for row in reader:
-                if len(row) == 6:
-                    if int(row[5]) < 30 and row[2] in location or int(row[5]) < 30 and location[0] == "" and location[1] == "":
-                        if row[3].split("/") in team:
-                            servers.append(row)
-                        elif len(team) <= 0:
-                            servers.append(row)
-                        elif team[0] == "":
-                            servers.append(row)
+                if len(row) == 5:
+                    if row[3].split("/") in team:
+                        servers.append(row)
+                    elif len(team) <= 0:
+                        servers.append(row)
+                    elif team[0] == "":
+                        servers.append(row)
         if len(servers) > 20:
             servers = servers[-20:]
         result = 0
@@ -54,12 +53,12 @@ def register_server(name : str, ip : str, country : str, team : str, message : s
             reader = csv.reader(f)
             header = next(reader)
             for row in reader:
-                if len(row) == 6:
+                if len(row) == 5:
                     ips.append(row[1])
         if ip in ips: return 0
         if team == "": team = "everyone/Everyone"
         with open("data/listserver.csv", mode="a", encoding="utf-8") as f:
-            f.write(f"{name},{ip},{country},{team},{message},0\n")
+            f.write(f"{name},{ip},{country},{team},{message}\n")
         return 0
     except:
         error = traceback.format_exc()
@@ -158,7 +157,7 @@ def start():
             return 0
         try:
             with open("data/listserver.csv", mode="w") as f:
-                f.write("Name,IP,Country,Team,Message,Badcount\n")
+                f.write("Name,IP,Country,Team,Message\n")
         except:
             logger.error(f"Error : Cant start server\nFail make file(data/listserver.csv)")
             return 2
