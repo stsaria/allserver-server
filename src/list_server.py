@@ -122,7 +122,7 @@ def start_server(host = "0.0.0.0", port = 50384):
     if not os.path.isfile("data/listserver.csv"):
         try:
             with open("data/listserver.csv", mode="w") as f:
-                f.write("Name,IP,Country,Team,Message,Badcount\n")
+                f.write("Name,IP,Country,Team,Message\n")
         except:
             logger.error(f"Error : Cant start server\nFail make file(data/listserver.csv)")
             return 2
