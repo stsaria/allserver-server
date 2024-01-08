@@ -21,13 +21,6 @@ AllServerについての基本的な情報は[ここ](https://github.com/stsaria
   - [自動起動設定](#%E8%87%AA%E5%8B%95%E8%B5%B7%E5%8B%95%E8%A8%AD%E5%AE%9A)
     - [特別必要要件](#%E7%89%B9%E5%88%A5%E5%BF%85%E8%A6%81%E8%A6%81%E4%BB%B6-2)
     - [設定](#%E8%A8%AD%E5%AE%9A)
-- [iniファイル](#ini%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB)
-  - [iniファイルとは](#ini%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E3%81%AF)
-  - [ファイル一覧](#%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%B8%80%E8%A6%A7)
-- [言語ファイル](#%E8%A8%80%E8%AA%9E%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB)
-  - [言語ファイルとは](#%E8%A8%80%E8%AA%9E%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E3%81%AF)
-  - [作成・記述方法](#%E4%BD%9C%E6%88%90%E3%83%BB%E8%A8%98%E8%BF%B0%E6%96%B9%E6%B3%95)
-  - [読み込み方法](#%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF%E6%96%B9%E6%B3%95)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -40,11 +33,6 @@ AllServerについての基本的な情報は[ここ](https://github.com/stsaria
 ※ 初めての方はこれを飛ばして操作方法を見てください<br/>
 Systemdやスタートアップなどで起動する際に使用できます
 - `--help` ヘルプを表示 `python3 allserver.py --help`
-
-- `--search/serverip` サーバーを検索 `python3 allserver.py --search`
-    追加引数
-    - `--plus-not-lang` 設定言語(国名)以外のサーバーも検索  `python3 allserver.py --search/serverip --plus-not-lang`
-    - `--plus-not-team` 設定チーム以外のサーバーも検索  `python3 allserver.py --search/serverip --plus-not-team`
 
 - `--start-minecraft-server`　マインクラフトサーバーを起動（待機）`python3 allserver.py --start-minecraft-server`
 
