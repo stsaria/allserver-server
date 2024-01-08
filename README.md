@@ -1,6 +1,6 @@
 # AllServer -Server-
 
-AllServerについての基本的な情報は[ここ](https://github.com/stsaria/allserver)から
+AllServerについての基本的な情報は[ここ](https://github.com/stsaria/allserver)から<br/>
 クライアントは[ここ](https://github.com/stsaria/allserver-client)から
 
 ## 目次
