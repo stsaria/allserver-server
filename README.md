@@ -1,6 +1,7 @@
 # AllServer -Server-
 
 AllServerについての基本的な情報は[ここ](https://github.com/stsaria/allserver)から
+クライアントは[ここ](https://github.com/stsaria/allserver-client)から
 
 ## 目次
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
