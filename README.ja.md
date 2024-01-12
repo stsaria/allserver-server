@@ -25,10 +25,10 @@ AllServerについての基本的な情報は[ここ](https://github.com/stsaria
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## 必要環境
-- OS Linux/Windows
+- OS Linux/Windows/OS X?
 - Java(Minecraftバージョンに合っている)(クライアントモードの場合は必要なし)
 - Python3(最新バージョン推奨)(バイナリの場合は必要なし？)<br/>
-  Requests(ライブラリ)
+  - Requests
 ## 引数
 ※ 初めての方はこれを飛ばして操作方法を見てください<br/>
 Systemdやスタートアップなどで起動する際に使用できます

@@ -91,8 +91,12 @@ def handle_client(client_socket, address):
                 data = client_socket.recv(1024)
                 if not data:
                     break
+                logger.info(f"Receive : {address}")
                 if data.decode('utf-8') == "next":
-                    client_socket.sendall(pickle.dumps(servers))
+                    send_str = ""
+                    for server in servers:
+                        send_str = send_str + ",".join(server).replace("\\", "") + "\\"
+                    client_socket.sendall(send_str.encode('utf-8'))
                     logger.info(f"Send : {address}")
             elif data.decode('utf-8').split(',')[0] == "1":
                 if len(data.decode('utf-8').split(',')) != 5:
