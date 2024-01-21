@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 ini = configparser.ConfigParser()
 ini.read('config/minecraftserver.ini', 'UTF-8')
 
+
+version = ini['basic']['version']
 def replace_func(fname, replace_set):
     target, replace = replace_set
     with open(fname, 'r', encoding='utf-8') as f1:
@@ -98,23 +100,27 @@ def get_minecraft_url(version):
     return 0, minecraft_server_url
 
 def start_minecraft_server(ip : str, mcid : str, motd = "The minecraft server"):
+    global version
     logger.info(f"IP:{ip} Start")
     dt_now        = datetime.datetime.now()
     dt_now_utc    = datetime.datetime.now(datetime.timezone.utc)
     try:
+        version = ini['basic']['version']
         os.makedirs(f"minecraft/{ip}", exist_ok=True)
-        result, stable_versions, snapshot_versions = get_minecraft_versions()
-        if result != 0:
-            logger.error(f"IP:{ip} Error : Fail get minecraft versions")
-            return 2
         shutil.copy("config/server.properties.template", f"minecraft/{ip}/server.properties")
         file_identification_rewriting(f"minecraft/{ip}/server.properties", "motd=", f"motd="+motd+"\n")
         with open(f"minecraft/{ip}/eula.txt", mode='a', encoding='utf-8') as f:
             f.write("#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).\n#"+dt_now_utc.strftime('%a')+" "+dt_now_utc.strftime('%b')+" "+dt_now_utc.strftime('%d')+" "+dt_now_utc.strftime('%H:%M:%S')+" "+str(dt_now_utc.tzinfo)+" "+dt_now_utc.strftime('%Y')+"\neula=true")
-        if not ini['basic']['version'] in stable_versions:
+        result, stable_versions, snapshot_versions = get_minecraft_versions()
+        if result != 0:
+            logger.error(f"IP:{ip} Error : Fail get minecraft versions")
+            return 2
+        if version == "latest":
+            version = stable_versions[0]
+        if not version in stable_versions:
             logger.error(f"IP:{ip} Error : Not found version in ini file")
             return 4
-        result, url_minecraft_server = get_minecraft_url(ini['basic']['version'])
+        result, url_minecraft_server = get_minecraft_url(version)
         if result != 0:
             logger.error(f"IP:{ip} Error : Fail get minecraft server url")
             return 5
@@ -143,6 +149,7 @@ def start_minecraft_server(ip : str, mcid : str, motd = "The minecraft server"):
         return 1
 
 def socket_server(host = "0.0.0.0", port = 50385):
+    global version
     lang = etc.load_lang()
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
@@ -160,14 +167,20 @@ def socket_server(host = "0.0.0.0", port = 50385):
             elif not len(data.split(",")) == 2:
                 client_socket.close()
                 continue
+            result, stable_versions, snapshot_versions = get_minecraft_versions()
+            if result != 0:
+                logger.error(f"IP:{client_address[0]} Error : Fail get minecraft versions")
+                client_socket.sendall("1".encode())
+                continue
+            if version == "latest":
+                version = stable_versions[0]
             motd, mcid = data.split(",")
-            send_data = ini['basic']['version']+","+ini['basic']['port']
+            send_data = version+","+ini['basic']['port']
             client_socket.sendall(send_data.encode("utf-8"))
             result = start_minecraft_server(client_address[0], mcid, motd = motd)
             if result == 0:
                 client_socket.sendall("0".encode())
             else:
-                print(result)
                 client_socket.sendall("1".encode())
             if os.path.isdir(f"minecraft/{client_address[0]}") and ini['basic']['delete_server'].lower() == "true":
                 shutil.rmtree(f"minecraft/{client_address[0]}")
