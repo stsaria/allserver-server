@@ -1,4 +1,5 @@
-import configparser, subprocess, traceback, requests, datetime, logging, shutil, socket, json, etc, os
+import configparser, subprocess, threading, traceback, requests, datetime, logging, shutil, socket, json, time, etc, os
+from mcrcon import MCRcon
 
 stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.INFO)
@@ -16,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 ini = configparser.ConfigParser()
 ini.read('config/minecraftserver.ini', 'UTF-8')
-
 
 version = ini['basic']['version']
 def replace_func(fname, replace_set):
@@ -99,6 +99,22 @@ def get_minecraft_url(version):
         return 2, "not"
     return 0, minecraft_server_url
 
+def run_rcon_command(ip : str, port : int, password : str, command : str):
+    result = ""
+    try:
+        result = MCRcon(ip, password, str(port)).command(command)
+    except:
+        pass
+    return result
+
+def watch_and_mc_alert_elapsed(ip : str, port : int, password : str):
+    lang = etc.load_lang()
+    time.sleep(1800)
+    run_rcon_command(ip, port, password, f"/say {lang["Message"]["MinecraftServer"]["MinecraftChat"][0]}")
+    time.sleep(1740)
+    run_rcon_command(ip, port, password, f"/say {lang["MinecraftChat"][1]}")
+    return
+
 def start_minecraft_server(ip : str, mcid : str, motd = "The minecraft server"):
     global version
     logger.info(f"IP:{ip} Start")
@@ -109,6 +125,7 @@ def start_minecraft_server(ip : str, mcid : str, motd = "The minecraft server"):
         os.makedirs(f"minecraft/{ip}", exist_ok=True)
         shutil.copy("config/server.properties.template", f"minecraft/{ip}/server.properties")
         file_identification_rewriting(f"minecraft/{ip}/server.properties", "motd=", f"motd="+motd+"\n")
+        file_identification_rewriting(f"minecraft/{ip}/server.properties", "enable-rcon=", f"enable-rcon=true\n")
         with open(f"minecraft/{ip}/eula.txt", mode='a', encoding='utf-8') as f:
             f.write("#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).\n#"+dt_now_utc.strftime('%a')+" "+dt_now_utc.strftime('%b')+" "+dt_now_utc.strftime('%d')+" "+dt_now_utc.strftime('%H:%M:%S')+" "+str(dt_now_utc.tzinfo)+" "+dt_now_utc.strftime('%Y')+"\neula=true")
         result, stable_versions, snapshot_versions = get_minecraft_versions()
@@ -137,6 +154,8 @@ def start_minecraft_server(ip : str, mcid : str, motd = "The minecraft server"):
                 return 6
         with open(f"minecraft/{ip}/ops.txt", encoding="utf-8", mode="w") as f:
             f.write(f"{mcid}")
+        t = threading.Thread(target=watch_and_mc_alert_elapsed, args=("127.0.0.1", 25575, "minecraft"), daemon=True)
+        t.start()
         result = exec_java(f"minecraft/{ip}", f"server.jar", 2, 2, java_argument=f"nogui --port {ini['basic']['port']}")
         if result != 0:
             logger.error(f"IP:{ip} Error : Error minecraft server")

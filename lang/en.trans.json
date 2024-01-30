@@ -52,6 +52,10 @@
 				"Please enter a supplement",
 				"Success.",
 				"Failed."
+			],
+			"MinecraftChat":[
+				"このサーバーはあと30分で終了します！",
+				"このサーバーはあと1分で終了します！"
 			]
 		},
 		"InstallAutoRun": {

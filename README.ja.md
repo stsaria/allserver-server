@@ -29,6 +29,7 @@ AllServerについての基本的な情報は[ここ](https://github.com/stsaria
 - Java(Minecraftバージョンに合っている)(クライアントモードの場合は必要なし)
 - Python3(最新バージョン推奨)(バイナリの場合は必要なし？)<br/>
   - Requests
+  - mcrcon
 ## 引数
 ※ 初めての方はこれを飛ばして操作方法を見てください<br/>
 Systemdやスタートアップなどで起動する際に使用できます
