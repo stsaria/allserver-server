@@ -110,9 +110,9 @@ def run_rcon_command(ip : str, port : int, password : str, command : str):
 def watch_and_mc_alert_elapsed(ip : str, port : int, password : str):
     lang = etc.load_lang()
     time.sleep(1800)
-    run_rcon_command(ip, port, password, f"/say {lang["Message"]["MinecraftServer"]["MinecraftChat"][0]}")
+    run_rcon_command(ip, port, password, "/say "+lang["Message"]["MinecraftServer"]["MinecraftChat"][0])
     time.sleep(1740)
-    run_rcon_command(ip, port, password, f"/say {lang["MinecraftChat"][1]}")
+    run_rcon_command(ip, port, password, "/say"+lang["MinecraftChat"][1])
     return
 
 def start_minecraft_server(ip : str, mcid : str, motd = "The minecraft server"):
@@ -126,6 +126,7 @@ def start_minecraft_server(ip : str, mcid : str, motd = "The minecraft server"):
         shutil.copy("config/server.properties.template", f"minecraft/{ip}/server.properties")
         file_identification_rewriting(f"minecraft/{ip}/server.properties", "motd=", f"motd="+motd+"\n")
         file_identification_rewriting(f"minecraft/{ip}/server.properties", "enable-rcon=", f"enable-rcon=true\n")
+        file_identification_rewriting(f"minecraft/{ip}/server.properties", "rcon.password=", f"rcon.password=minecraft\n")
         with open(f"minecraft/{ip}/eula.txt", mode='a', encoding='utf-8') as f:
             f.write("#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).\n#"+dt_now_utc.strftime('%a')+" "+dt_now_utc.strftime('%b')+" "+dt_now_utc.strftime('%d')+" "+dt_now_utc.strftime('%H:%M:%S')+" "+str(dt_now_utc.tzinfo)+" "+dt_now_utc.strftime('%Y')+"\neula=true")
         result, stable_versions, snapshot_versions = get_minecraft_versions()
@@ -201,11 +202,10 @@ def socket_server(host = "0.0.0.0", port = 50385):
                 client_socket.sendall("0".encode())
             else:
                 client_socket.sendall("1".encode())
-            if os.path.isdir(f"minecraft/{client_address[0]}") and ini['basic']['delete_server'].lower() == "true":
-                shutil.rmtree(f"minecraft/{client_address[0]}")
             client_socket.close()
         except KeyboardInterrupt:
             logger.info("STOP!!")
+            server_socket.close()
             return 0
         except socket.timeout:
             continue
@@ -213,6 +213,9 @@ def socket_server(host = "0.0.0.0", port = 50385):
             error = traceback.format_exc()
             logger.error(f"Error : Unknow\n\n{error}")
             continue
+        finally:
+            if os.path.isdir(f"minecraft/{client_address[0]}") and ini['basic']['delete_server'].lower() == "true":
+                shutil.rmtree(f"minecraft/{client_address[0]}")
 
 def register_server(port = 50384):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
