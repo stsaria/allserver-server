@@ -224,6 +224,10 @@ def register_server(port = 50384):
         ini.read('config/basic.ini', 'UTF-8')
         lang = etc.load_lang()
         ip = input(lang["Message"]["MinecraftServer"]["Message"][2]+" :")
+        if len(ip.split(":")) > 1:
+            if ip.split(":")[1].isdigit():
+                port = int(ip.split(":")[1])
+                ip = ip.split(":")[0]
         name = input(lang["Message"]["MinecraftServer"]["Message"][3]+" :").replace(",", "").replace("\n", "")
         message = input(lang["Message"]["MinecraftServer"]["Message"][4]+" :").replace(",", "").replace("\n", "")
         if len(name) >= 10: name = name[:10]
