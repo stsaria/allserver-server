@@ -170,6 +170,7 @@ def start_minecraft_server(ip : str, mcid : str, motd = "The minecraft server"):
 
 def socket_server(host = "0.0.0.0", port = 50385):
     global version
+    client_address = (None, None)
     lang = etc.load_lang()
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
